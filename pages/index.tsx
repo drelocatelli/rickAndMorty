@@ -3,27 +3,26 @@ import { useQuery } from "react-query";
 import Centered from "../Components/Centered";
 import Header from "../Components/Header";
 
-export default function Home() {
-
+// !
+function Home() {
+  
   const [page, setPage] = useState(1);
 
-  const fetchProjects = (page = 1) => fetch(`https://rickandmortyapi.com/api/character?page=${page}`)
+  const fetchData = (page = 1) => fetch(`https://rickandmortyapi.com/api/character?page=${page}`)
     .then((res) => res.json());
 
-  const { isLoading, isError, error, data, isFetching, isPreviousData } = useQuery(['characters', page], () => fetchProjects(page), { keepPreviousData: false });
+  const { isLoading, isError, error, data, isFetching, isPreviousData } = useQuery(['characters', page], () => fetchData(page), { keepPreviousData: false });
 
-
-  useEffect(() => {
-    console.log(data)
-  }, [])
-
-
-  if (isLoading || isFetching) return (<>
-    <Header />
+  if(isFetching) return(
+  <>
+  <Header />
     <Centered>
       Carregando...
     </Centered>
-  </>)
+  </>
+  )
+  
+  if (isLoading) return (<> </>)
 
   if (error) return (<>
     <Header />
@@ -31,8 +30,6 @@ export default function Home() {
       Ocorreu um erro, tente novamente mais tarde.
     </Centered>
   </>)
-
-
 
   return (
     <>
@@ -42,6 +39,7 @@ export default function Home() {
           return (
             <div key={item.id} style={{ marginBottom: '30px' }}>
               <img style={{ borderRadius: '50px', float: 'left' }} src={item.image} width={50} height={50} />
+              
               <div style={{ position: 'relative', top: '10px', left: '10px' }}>
                 {item.name}
                 <br />
@@ -64,4 +62,17 @@ export default function Home() {
       </Centered>
     </>
   )
+ 
 }
+
+
+export async function getServerSideProps() {
+
+  console.log('ola mundo')
+  
+  return{
+    props: {}
+  }
+}
+
+export default Home;
